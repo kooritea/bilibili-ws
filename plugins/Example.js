@@ -1,13 +1,3 @@
-# bilibili-ws
-
-自助 b 站弹幕服务器连接器
-主程序负责保持与弹幕服务器的连接和解析弹幕数据，其他功能由插件提供。
-
-自动加载 plugins 文件夹下的 js 文件，插件导出一个类，所有插件在程序启动时进行初始化，传入一个 ebus，ebus 目前只有一个 cmd 事件。
-
-## 示例插件
-
-```javascript
 module.exports = class Example {
   constructor(ebus) {
     ebus.on("cmd", ({ message, roomInfo }) => {
@@ -41,4 +31,3 @@ module.exports = class Example {
     });
   }
 };
-```
