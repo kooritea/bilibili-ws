@@ -1,0 +1,15 @@
+{
+  "name": "bilibili-ws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kooritea",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "ws": "^7.3.0"
+  }
+}
