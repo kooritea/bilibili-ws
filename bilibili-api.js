@@ -26,4 +26,17 @@ module.exports = {
       )
     ).data.data.room_id;
   },
+  async getMasterUid(roomid) {
+    return (
+      await axios.get(
+        `https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room?roomid=${roomid}`,
+        {
+          headers: {
+            Accept: "*/*",
+            "User-Agent": "Mozilla/5.0 BiliDroid/5.37.0 (bbcallen@gmail.com)",
+          },
+        }
+      )
+    ).data.data.info.uid;
+  },
 };
