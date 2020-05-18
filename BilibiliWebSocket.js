@@ -54,7 +54,7 @@ module.exports = class BilibiliWebSocket {
   constructor(ebus, roomInfo, Logger) {
     this.ebus = ebus;
     this.roomInfo = roomInfo;
-    this.Logger = Logger
+    this.Logger = Logger;
     this.roomid = Number(roomInfo.roomid);
     this.ws = null;
     this.reconnectCount = 0;
@@ -133,9 +133,9 @@ module.exports = class BilibiliWebSocket {
       },
       this.reconnectCount < 5 ? 5000 : 600000
     );
-  },
-  onerror(e){
+  }
+  onerror(e) {
     this.Logger.warn("房间出错", [this.roomInfo.roomid], e);
-    this.onclose()
+    this.onclose();
   }
 };
