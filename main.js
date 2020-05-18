@@ -4,6 +4,7 @@ const path = require("path");
 
 const BilibiliWebSocket = require("./BilibiliWebSocket");
 const Logger = require("./logger");
+const Utils = require("./utils");
 const Config = require("./config");
 const { getNickname, getLongRoomid, getMasterUid } = require("./bilibili-api");
 const ebus = new EventEmitter();
@@ -11,9 +12,8 @@ const Rooms = [];
 const Plugins = [];
 const pluginsPath = fs.readdirSync(path.join(__dirname, "./plugins"));
 
-const Ps = [];
-for (let roomInfo of Config.rooms) {
-  const p = new Promise(async (resolve) => {
+(async function () {
+  for (let roomInfo of Config.rooms) {
     try {
       const roomid = await getLongRoomid(roomInfo.roomid);
       const nickname = await getNickname(roomid);
@@ -29,14 +29,11 @@ for (let roomInfo of Config.rooms) {
           String(roomInfo.roomid) === String(roomid) ? "" : "(" + roomid + ")"
         }`
       );
+      await Utils.sleep(5000);
     } catch (e) {
       Logger.warn("初始化房间失败", [roomInfo.roomid], e);
     }
-    resolve();
-  });
-  Ps.push(p);
-}
-Promise.all(Ps).then(() => {
+  }
   for (let pluginName of pluginsPath) {
     try {
       const Plugin = require(`./plugins/${pluginName}`);
@@ -50,4 +47,4 @@ Promise.all(Ps).then(() => {
       Logger.warn(`插件${pluginName}加载失败`, null, e);
     }
   }
-});
+})();
