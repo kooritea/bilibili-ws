@@ -51,9 +51,10 @@ const decode = function (buf) {
   return result;
 };
 module.exports = class BilibiliWebSocket {
-  constructor(ebus, roomInfo) {
+  constructor(ebus, roomInfo, Logger) {
     this.ebus = ebus;
     this.roomInfo = roomInfo;
+    this.Logger = Logger
     this.roomid = Number(roomInfo.roomid);
     this.ws = null;
     this.reconnectCount = 0;
@@ -71,12 +72,15 @@ module.exports = class BilibiliWebSocket {
   }
   connect() {
     if (this.ws) {
-      this.ws.close();
+      try {
+        this.ws.close();
+      } catch (e) {}
     }
     this.ws = new WebSocket("wss://broadcastlv.chat.bilibili.com:2245/sub");
     this.ws.on("open", this.onopen.bind(this));
     this.ws.on("message", this.onmessage.bind(this));
     this.ws.on("close", this.onclose.bind(this));
+    this.ws.on("error", this.onerror.bind(this));
   }
   send(data, op) {
     switch (typeof data) {
@@ -129,5 +133,9 @@ module.exports = class BilibiliWebSocket {
       },
       this.reconnectCount < 5 ? 5000 : 600000
     );
+  },
+  onerror(e){
+    this.Logger.warn("房间出错", [this.roomInfo.roomid], e);
+    this.onclose()
   }
 };

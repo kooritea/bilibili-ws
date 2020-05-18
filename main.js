@@ -21,7 +21,7 @@ for (let roomInfo of Config.rooms) {
       roomInfo.nickname = nickname;
       roomInfo._roomid = roomid;
       roomInfo.masterid = masterid;
-      const Room = new BilibiliWebSocket(ebus, roomInfo);
+      const Room = new BilibiliWebSocket(ebus, roomInfo, Logger);
       await Room.start();
       Rooms.push(Room);
       Logger.info(
