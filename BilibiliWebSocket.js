@@ -3,6 +3,7 @@ const TextEncoder = require("util").TextEncoder;
 const TextDecoder = require("util").TextDecoder;
 const textEncoder = new TextEncoder("utf-8");
 const textDecoder = new TextDecoder("utf-8");
+const zlib = require("zlib");
 
 const encode = function (str, op) {
   const data = textEncoder.encode(str);
@@ -36,9 +37,19 @@ const decode = function (buf) {
     while (offset < buf.length) {
       const packetLen = buf.readInt32BE(offset + 0);
       const headerLen = buf.readInt16BE(offset + 4);
-      const data = buf.slice(offset + headerLen, offset + packetLen);
-      const body = JSON.parse(textDecoder.decode(data));
-      result.body.push(body);
+      if (result.ver == 2) {
+        let data = buf.slice(offset + headerLen, offset + packetLen);
+        let newBuffer = zlib.inflateSync(new Uint8Array(data));
+        const obj = decode(newBuffer);
+        const body = obj.body;
+        result.body = result.body.concat(body);
+      } else {
+        let data = buf.slice(offset + headerLen, offset + packetLen);
+        let body = textDecoder.decode(data);
+        if (body) {
+          result.body.push(JSON.parse(body));
+        }
+      }
       offset += packetLen;
     }
   } else if (result.op === 3) {
