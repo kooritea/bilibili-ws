@@ -85,6 +85,7 @@ module.exports = class BilibiliWebSocket {
     if (this.ws) {
       try {
         this.ws.close();
+        this.ws.removeAllListeners();
       } catch (e) {}
     }
     this.ws = new WebSocket("wss://broadcastlv.chat.bilibili.com:2245/sub");
@@ -136,17 +137,25 @@ module.exports = class BilibiliWebSocket {
         break;
     }
   }
-  onclose() {
-    this.reconnectCount++;
-    setTimeout(
-      () => {
-        this.connect();
-      },
-      this.reconnectCount < 5 ? 5000 : 600000
-    );
+  onclose(e) {
+    switch (e.code) {
+      case 1000: // CLOSE_NORMAL
+        console.log("WebSocket: closed");
+        break;
+      default:
+        // Abnormal closure
+        this.reconnectCount++;
+        setTimeout(
+          () => {
+            this.connect();
+          },
+          this.reconnectCount < 5 ? 5000 : 600000
+        );
+        break;
+    }
   }
   onerror(e) {
-    this.Logger.warn("房间出错", [this.roomInfo.roomid], e);
-    this.onclose();
+    this.Logger.warn("连接房间出错", [this.roomInfo.roomid], e);
+    this.onclose(e);
   }
 };
