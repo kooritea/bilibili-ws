@@ -15,7 +15,13 @@ const pluginsPath = fs.readdirSync(path.join(__dirname, "./plugins"));
 (async function () {
   for (let roomInfo of Config.rooms) {
     try {
-      const roomid = await getLongRoomid(roomInfo.roomid);
+      let roomid
+      try{
+        roomid = await getLongRoomid(roomInfo.roomid);
+      }catch(e){
+        Logger.warn("房间短号转长号失败，如config填写的是长号则无视该警告", [roomInfo.roomid]);
+        roomid = roomInfo.roomid
+      }
       const nickname = await getNickname(roomid);
       const masterid = await getMasterUid(roomid);
       roomInfo.nickname = nickname;
@@ -31,7 +37,7 @@ const pluginsPath = fs.readdirSync(path.join(__dirname, "./plugins"));
       );
       await Utils.sleep(5000);
     } catch (e) {
-      Logger.warn("初始化房间失败", [roomInfo.roomid], e);
+      Logger.warn("初始化房间失败", [roomInfo.roomid]);
     }
   }
   for (let pluginName of pluginsPath) {
