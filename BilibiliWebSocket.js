@@ -138,21 +138,13 @@ module.exports = class BilibiliWebSocket {
     }
   }
   onclose(e) {
-    switch (e.code) {
-      case 1000: // CLOSE_NORMAL
-        console.log("WebSocket: closed");
-        break;
-      default:
-        // Abnormal closure
-        this.reconnectCount++;
-        setTimeout(
-          () => {
-            this.connect();
-          },
-          this.reconnectCount < 5 ? 5000 : 600000
-        );
-        break;
-    }
+    this.reconnectCount++;
+    setTimeout(
+      () => {
+        this.connect();
+      },
+      this.reconnectCount < 5 ? 5000 : 600000
+    );
   }
   onerror(e) {
     this.Logger.warn("连接房间出错", [this.roomInfo.roomid], e);

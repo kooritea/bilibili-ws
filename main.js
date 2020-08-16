@@ -45,7 +45,7 @@ const pluginsPath = fs.readdirSync(path.join(__dirname, "./plugins"));
       const Plugin = require(`./plugins/${pluginName}`);
       if (typeof Plugin === "function") {
         if (!Plugin.disable) {
-          Plugins.push(new Plugin(ebus, Config));
+          Plugins.push(new Plugin(ebus, Config, Logger));
           Logger.info(`插件${pluginName}已加载`);
         }
       }
