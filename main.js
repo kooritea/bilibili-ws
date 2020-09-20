@@ -17,7 +17,7 @@ const pluginsPath = fs.readdirSync(path.join(__dirname, "./plugins"));
     try {
       let roomid
       try{
-        roomid = await getLongRoomid(roomInfo.roomid);
+        roomid = Number(roomInfo.roomid)<=1000?await getLongRoomid():roomInfo.roomid
       }catch(e){
         Logger.warn("房间短号转长号失败，如config填写的是长号则无视该警告", [roomInfo.roomid]);
         roomid = roomInfo.roomid
