@@ -9,7 +9,7 @@
   "author": "kooritea",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "ws": "^7.3.0",
     "zlib": "^1.0.5"
   }
